@@ -3,7 +3,7 @@ Experimenting around with self-hosting Fluxer early
 
 ## More about this small project
 
-The current Dockerfile is pretty outdated, won't build without substantial modifications to it. I've spent a bit of time actually working around it 'cus quite frankly, it's a mess on a greater scale. I've mostly relied on my self-hosted LLM for advice regarding fixing pnpm build errors for a monorepo which more or so ended up allowing me to get 90% there - the Containerfile is still written by me. I use it for debugging, not vibecoding and even then I'd rather use a search engine.  (once again, it was late night when I had a knack to try this so since it was running, why not try it. well it got some things right and other so terribly wrong that I started running in circles after a bit xd)
+The current Dockerfile is pretty outdated, won't build without substantial modifications to it. I've spent a bit of time actually working around it 'cus quite frankly, it's a mess on a greater scale. I've mostly relied on my self-hosted LLM for advice regarding fixing pnpm build errors for a monorepo which more or so ended up allowing me to get 50% there - the Containerfile is still written by me. I use it for debugging, not vibecoding and even then I'd rather use a search engine.  (once again, it was late night when I had a knack to try this so since it was running, why not try it. well it got some things right and other so terribly wrong that I started running in circles after a bit xd)
 
 I had issues with building the image as suddenly the language directories were always missing 'cus apparently `.dockerignore`  excludes them (???)
 
