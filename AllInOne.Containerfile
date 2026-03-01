@@ -39,9 +39,10 @@ RUN pnpm rebuild msgpackr-extract @parcel/watcher
 #----------------------- fluxer_server
 FROM fluxer_deps AS fluxer_server
 
-RUN pnpm --filter @fluxer/config generate
-RUN pnpm --filter @fluxer/marketing build:css
-RUN pnpm --filter fluxer_server typecheck
+RUN pnpm --filter @fluxer/config generate \
+    && pnpm --filter @fluxer/marketing build:css \
+    && pnpm --filter admin build:css \
+    && pnpm --filter fluxer_server typecheck
 
 
 #----------------------- fluxer_gateway
