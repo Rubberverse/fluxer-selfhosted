@@ -27,7 +27,7 @@ At production stage, instead of running it as root, it chowns everything as `nod
 ## Should you run this?
 
 > [!NOTE]
-> Community fork fixes most of this so you can probably run it just fine. Can't promise that it won't explode suddenly if official builds release.
+> Community discussion fixes most of this so you can probably run it just fine. Can't promise that it won't explode suddenly if official builds release.
 
 Probably not. A lot of things are hardcoded in code so some silly things such as [timing out while uploading a file](https://github.com/fluxerapp/fluxer/issues/582) can occur. [SSO functionality is apparently also broken](https://github.com/fluxerapp/fluxer/issues/556). refactor repo changed a lot of things around but there are still critical bugs and issues with hardcoded values flying here 'n' there. Use de-federated Matrix in the meantime.
 
@@ -72,7 +72,7 @@ This took me around 15 minutes to complete on 2 cores of i3-7100 so if you have 
 
 ## Running it
 
-It makes use of Valkey (Redis-compatible alternative pretty much, presumably for caching and session storage), Meilisearch (for search functionality), LiveKit as a SFU for your typical Voice & Video Chat needs, Nats for Pub/Sb messaging and persistent job queue [if this gist is to be any believed, not sure if the gist author did bare minimum of fact checking the LLM here](https://gist.github.com/PaulMColeman/e7ef82e05035b24300d2ea1954527f10)
+It makes use of Valkey (Redis-compatible alternative pretty much, presumably for caching and session storage), Meilisearch (for search functionality), LiveKit as a SFU for your typical Voice & Video Chat needs, Nats for Pub/Sub messaging and persistent job queue [if this gist is to be any believed, not sure if the gist author did bare minimum of fact checking the LLM here](https://gist.github.com/PaulMColeman/e7ef82e05035b24300d2ea1954527f10)
 
 You'll almost likely will want to mount a valid config and point the `FLUXER_CONFIG` to it.
 
