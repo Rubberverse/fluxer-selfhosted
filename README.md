@@ -26,6 +26,9 @@ At production stage, instead of running it as root, it chowns everything as `nod
 
 ## Should you run this?
 
+> [!NOTE]
+> Community fork fixes most of this so you can probably run it just fine. Can't promise that it won't explode suddenly if official builds release.
+
 Probably not. A lot of things are hardcoded in code so some silly things such as [timing out while uploading a file](https://github.com/fluxerapp/fluxer/issues/582) can occur. [SSO functionality is apparently also broken](https://github.com/fluxerapp/fluxer/issues/556). refactor repo changed a lot of things around but there are still critical bugs and issues with hardcoded values flying here 'n' there. Use de-federated Matrix in the meantime.
 
 ## Building the image
