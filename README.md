@@ -37,7 +37,7 @@ No pre-built images as Fluxer still makes use of hardcoded defautls for a lot of
 
 ### Preparation
 
-Make a directory called fluxer and cd into it `mkdir -p ~/fluxer && cd ~/fluxer` then just clone fluxer repository `git clone https://github.com/fluxerapp/fluxer .`
+Make a directory called fluxer and cd into it `mkdir -p ~/fluxer && cd ~/fluxer` then just clone fluxer repository `GIT_LFS_SKIP_SMUDGE=1 git clone --depth 1 --branch refactor https://github.com/fluxerapp/fluxer.git .`
 
 Apply fixes from 'Modifying files' afterwards.
 
