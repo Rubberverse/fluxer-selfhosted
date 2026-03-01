@@ -113,6 +113,7 @@ LABEL org.opencontainers.image.version="${BUILD_NUMBER}"
 LABEL org.opencontainers.image.created="${BUILD_TIMESTAMP}"
 
 ENV NODE_ENV=production \
+    TINI_SUBREAPER=1 \
     FLUXER_SERVER_HOST=0.0.0.0 \
     FLUXER_SERVER_PORT=8080 \
     FLUXER_GATEWAY_HOST=127.0.0.1 \
