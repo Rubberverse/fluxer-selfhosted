@@ -37,7 +37,11 @@ No pre-built images as Fluxer still makes use of hardcoded defautls for a lot of
 
 ### Preparation
 
-Make a directory called fluxer and cd into it `mkdir -p ~/fluxer && cd ~/fluxer` then just clone fluxer repository `git clone https://github.com/fluxerapp/fluxer` (or alternatively, use community fixed fork - `git clone https://github.com/mgabor3141/fluxer`, it fixes a lot of issues with current upstream) 
+Make a directory called fluxer and cd into it `mkdir -p ~/fluxer && cd ~/fluxer` then just clone fluxer repository `git clone https://github.com/fluxerapp/fluxer .`
+
+Apply fixes from 'Modifying files' afterwards.
+
+In case you wanna build desktop client properly then [this fork makes it possible](https://github.com/mgabor3141/fluxer).w
 
 ### Modifying files
 
