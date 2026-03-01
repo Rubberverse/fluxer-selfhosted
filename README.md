@@ -7,7 +7,7 @@ The current Dockerfile is pretty outdated, won't build without substantial modif
 
 I had issues with building the image as suddenly the language directories were always missing 'cus apparently `.dockerignore`  excludes them (???)
 
-Thanks to this AI generated piece of shit [gist](https://gist.github.com/PaulMColeman/e7ef82e05035b24300d2ea1954527f10) i've found on the internet for helping me figure out the last missing piece, which was the build failing 'cus `pnpm compile:lungui` silently didn't do anything. Turns out the `.dockerignore` was to blame here.
+Thanks to this AI generated ~~piece of shit~~ [gist](https://gist.github.com/PaulMColeman/e7ef82e05035b24300d2ea1954527f10) I've found on the internet for helping me figure out the last missing piece, which was the build failing 'cus `pnpm compile:lungui` silently didn't do anything. Turns out the `.dockerignore` was to blame here. I just hate slop, can't blame me for that, eh? It was pretty hard to follow with 'Mrs clode' fancy formatting.
 
 I've seen pretty misleading comments about this so let me clarify, the `fluxer_server` container intended for self-hosting bundles following components into a single container image:
 
