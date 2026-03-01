@@ -14,9 +14,9 @@ I've seen pretty misleading comments about this so let me clarify, the `fluxer_s
 - fluxer_server (back-end, pnpm/nodejs/whatever mix)
 - fluxer_app (front-end in Rust, I suppose it also makes use of fluxer_app_proxy)
 - fluxer_gateway (not sure what it does, `rebar3` is used to compile it though. Might be related to payment gateway?)
-- fluxer_media_proxy (if you use nsfw detection model then it just copies the model to /opt/data/model.onnx)
+- fluxer_media_proxy (if you use nsfw detection model then it just copies the model to /opt/data/model.onnx but doesn't build the app. maybe it does but iunno. Not a nodejs guy.)
 
-Proably more, or less. It's a giant monolith, which means it's not just "fluxer_server" and that's it. It's actually 4-5 (maybe more) components running in a single container image. Similar to stoat but stoat still makes you run each component seperately (which is good for what it is. That's the point of containers, isolation between each other, though it adds a lot of friction and complexity to deployment.)
+Probably more, or less. It's a giant monolith, which means it's not just "fluxer_server" and that's it. It's actually 4-5 (maybe more) components running in a single container image. Similar to stoat but stoat still makes you run each component seperately (which is good for what it is. That's the point of containers, isolation between each other, though it adds a lot of friction and complexity to deployment.)
 
 ## What the Containerfile does
 
