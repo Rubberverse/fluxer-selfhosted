@@ -77,12 +77,15 @@ This permits loading external media source from `fluxerstatic.com`. I suppose yo
 Now you can finally build it. It's simple but will waste some time, your CPU will probably be maxed as it has to compile things. You'll also need plenty of space. Each build stage consumes 2GB+ so let me see...
 
 ```bash
-localhost/fluxer                                    dev              bdd6bda22b78  36 minutes ago     2.32 GB
-<none>                                              <none>           68fe42045ec8  42 minutes ago     6.68 GB
-<none>                                              <none>           e42ba59d904e  47 minutes ago     2.41 GB
+localhost/fluxer                                    dev              bdd6bda22b78  About an hour ago  2.32 GB
+<none>                                              <none>           68fe42045ec8  About an hour ago  6.68 GB
+<none>                                              <none>           e42ba59d904e  About an hour ago  2.41 GB
+<none>                                              <none>           4449bdb9b72d  2 hours ago        2.28 GB
+<none>                                              <none>           793ee0a9f54f  2 hours ago        4.91 GB
+<none>                                              <none>           d0b8f77f0b65  2 hours ago        2.41 GB
 ```
 
-Around ~11,41GB per build. The final resulting image is 2.32GB in size. Bulky, isn't it? That's whole build with NSFW model included (which is just 17 megabytes in size)
+Around ~11,41GB per build if we count only first three layers, otherwise it's `21,01GB` per build. The final resulting image is 2.32GB in size. Bulky, isn't it? That's whole build with NSFW model included (which is just 17 megabytes in size)
 
 Anyhow, to build it you need to run following command:
 
