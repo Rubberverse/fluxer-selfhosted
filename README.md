@@ -3,7 +3,7 @@ Experimenting around with self-hosting Fluxer early
 
 ## More about this small project
 
-The current Dockerfile is pretty outdated, won't build without substantial modifications to it. I've spent a bit of time actually working around it 'cus quite frankly, it's a mess on a greater scale. I've mostly relied on my self-hosted LLM for advice regarding fixing pnpm build errors for a monorepo which more or so ended up allowing me to get 90% there - the Containerfile is still written by me. I use it for debugging, not vibecoding and even then I'd rather use a search engine. 
+The current Dockerfile is pretty outdated, won't build without substantial modifications to it. I've spent a bit of time actually working around it 'cus quite frankly, it's a mess on a greater scale. I've mostly relied on my self-hosted LLM for advice regarding fixing pnpm build errors for a monorepo which more or so ended up allowing me to get 90% there - the Containerfile is still written by me. I use it for debugging, not vibecoding and even then I'd rather use a search engine.  (once again, it was late night when I had a knack to try this so since it was running, why not try it. well it got some things right and other so terribly wrong that I started running in circles after a bit xd)
 
 I had issues with building the image as suddenly the language directories were always missing 'cus apparently `.dockerignore`  excludes them (???)
 
@@ -21,6 +21,10 @@ Proably more, or less. It's a giant monolith, which means it's not just "fluxer_
 ## What the Containerfile does
 
 At production stage, instead of running it as root, it chowns everything as `node:node` user with 555 permissions before forking off to node:node user and running the image. It also installs rust toolchain very early on in the image, I didn't bother installing wasm-pack as it manually figures it out and does it by itself.
+
+## Should you run this?
+
+Probably not. A lot of things are hardcoded in code so some silly things such as [timing out while uploading a file](https://github.com/fluxerapp/fluxer/issues/582) can occur. [SSO functionality is apparently also broken](https://github.com/fluxerapp/fluxer/issues/556). refactor repo changed a lot of things around but there are still critical bugs and issues with hardcoded values flying here 'n' there. Use de-federated Matrix in the meantime.
 
 ## Building the image
 
@@ -92,8 +96,33 @@ This took me around 15 minutes to complete on 2 cores of i3-7100 so if you have 
 
 It makes use of Valkey (Redis-compatible alternative pretty much, presumably for caching and session storage), Meilisearch (for search functionality), LiveKit as a SFU for your typical Voice & Video Chat needs, Nats for Pub/Sb messaging and persistent job queue [if this gist is to be any believed, not sure if the gist author did bare minimum of fact checking the LLM here](https://gist.github.com/PaulMColeman/e7ef82e05035b24300d2ea1954527f10)
 
+You'll almost likely will want to mount a valid config and point the `FLUXER_CONFIG` to it.
+
+```bash
+podman run --rm localhost/fluxer:dev
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.29.3.tgz
+
+> fluxer_server@0.0.0 start /usr/src/app/fluxer_server
+> tsx src/startServer.tsx
+
+/usr/src/app/packages/config/src/ConfigLoader.tsx:37
+                throw new Error('FLUXER_CONFIG must be set to a JSON config path.');
+                      ^
+
+Error: FLUXER_CONFIG must be set to a JSON config path.
+    at loadConfig (/usr/src/app/packages/config/src/ConfigLoader.tsx:37:9)
+    at <anonymous> (/usr/src/app/fluxer_server/src/Config.tsx:22:22)
+    at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.14.0
+/usr/src/app/fluxer_server:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  fluxer_server@0.0.0 start: `tsx src/startServer.tsx`
+ ```
+
 //todo
 
-## Why does containerfile have weird spacing?
+## Why does Containerfile have weird spacing?
 
 I threw it up randomly one of these nights so formatting is just utterly screwed up in places. I've tried fixing it up but ya, it is what it is. I've had more proper copy somewhere but I've lost it so this notepad++ backup is the best ya gonna get.
