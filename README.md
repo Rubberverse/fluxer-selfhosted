@@ -7,7 +7,9 @@ The current Dockerfile is pretty outdated, won't build without substantial modif
 
 I had issues with building the image as suddenly the language directories were always missing 'cus apparently `.dockerignore`  excludes them (???)
 
-Thanks to this AI generated ~~piece of shit~~ [gist](https://gist.github.com/PaulMColeman/e7ef82e05035b24300d2ea1954527f10) I've found on the internet for helping me figure out the last missing piece, which was the build failing 'cus `pnpm compile:lungui` silently didn't do anything. Turns out the `.dockerignore` was to blame here. I just hate slop, can't blame me for that, eh? It was pretty hard to follow with 'Mrs clode' fancy formatting.
+Thanks to this AI generated [gist](https://gist.github.com/PaulMColeman/e7ef82e05035b24300d2ea1954527f10) I've found on the internet for helping me figure out the last missing piece, which was the build failing 'cus `pnpm compile:lungui` silently didn't do anything.
+
++ Shoutouts to this [guide](https://github.com/orgs/fluxerapp/discussions/542) on Fluxer's discussions.
 
 I've seen pretty misleading comments about this so let me clarify, the `fluxer_server` container intended for self-hosting bundles following components into a single container image:
 
@@ -32,45 +34,11 @@ No pre-built images as Fluxer still makes use of hardcoded defautls for a lot of
 
 ### Preparation
 
-Make a directory called fluxer and cd into it `mkdir -p ~/fluxer && cd ~/fluxer` then just clone fluxer repository `git clone https://github.com/fluxerapp/fluxer`
+Make a directory called fluxer and cd into it `mkdir -p ~/fluxer && cd ~/fluxer` then just clone fluxer repository `git clone https://github.com/fluxerapp/fluxer` (or alternatively, use community fixed fork - `git clone https://github.com/mgabor3141/fluxer`, it fixes a lot of issues with current upstream) 
 
 ### Modifying files
 
-In order for it to actually compile, you need to change 2-3 files. One of them is the aforementioned `.dockerignore`, then we hve `rspack.config.mjs` inside `fluxer_app/rspack.config.mjs` and finally CSP modification inside `fluxer_server/src/ServiceInitializer.tsx`.
-
-1. Edit `.dockerignore` and comment out these two values - ex. `nano .dockerignore` while inside the fluxer directory.
-
-```bash
-/fluxer_app/src/data/emojis.json
-/fluxer_app/src/locales/*/messages.js
-```
-
-2. Go to the very end of the file and append to it following instead
-
-```bash
-!fluxer_app/scripts/build
-!fluxer_app/scripts/build/**
-```
-
-This adds an exception for build scripts so it doesn't ignore all the files generated inside during container build. (or whatever)
-
-3. Now edit the file inside `fluxer_app/rspack.config.mjs` - ex. `nano fluxer_app/rspack.config.mjs`. In there, you want to replace whole `const CDN_ENDPOINT` line with following:
-
-```bash
-const CDN_ENDPOINT = 'FLUXER_CDN_ENDPOINT' in process.env ? process.env.FLUXER_CDN_ENDPOINT : 'https://fluxerstatic.com';
-```
-
-I suspect the "CDN_ENDPOINT" is in reality just used for client-sided images, CSS and whatever else.
-
-4. Finally, you must edit CSP. Edit the file inside `fluxer_server/src/ServiceInitializer.tsx` - ex. `nano fluxer_server/src/ServiceInitializer.tsx`. Do `ctrl+w` and search for `csp`
-
-```bash
-    styleSrc: ["'self'", "'unsafe-inline'", 'https://fluxerstatic.com'],
-    imgSrc: ["'self'", 'data:', 'blob:', publicUrlHost, mediaUrlHost, 'https://fluxerstatic.com'],
-    fontSrc: ["'self'", 'https://fluxerstatic.com'],
-```
-
-This permits loading external media source from `fluxerstatic.com`. I suppose you could try modifying FLUXER_CDN_ENDPOINT env variable here and making it use your web server instead of somebody's else but I'm not sure how well that works, and if app doesn't have this CDN hardcoded.
+[Follow this instead](https://github.com/orgs/fluxerapp/discussions/542#discussioncomment-15922947)
 
 ### Actually building the multi-service container
 
