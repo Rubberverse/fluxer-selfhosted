@@ -1,0 +1,651 @@
+{
+    //Comments are invalid and are provided to explain things here (pulled from config schema)
+    //This configuration file in itself is invalid and only serves as a example of ALL possible configuration values.
+    "env": "production",
+    //Configuration for domains and ports used to construct public URLs
+    "domain": {
+        //The primary domain name (e.g., example.com, localhost). [String]
+        "base_domain": "chat.domain.tld",
+        //The URL scheme for public endpoints. [String]
+        "public_scheme": "https",
+        //"The public-facing port number. [Number]
+        "public_port": 443,
+        //The URL scheme for internal endpoints. [String]
+        "internal_scheme": "http",
+        //The internal port number. [Number]
+        "internal_port": "8088",
+        //Separate domain for static CDN assets (optional). [String]
+        "static_cdn_domain": "static.domain.tld",
+        //Domain for short invite links (optional). [String]
+        "invite_domain": "invite.domain.tld",
+        //Domain for gift links (optional). [String]
+        "gift_domain": "gift.domain.tld"
+    },
+    //Explicit overrides for service endpoints. Use these if derived URLs are incorrect.
+    "endpoint_overrides": {
+        //Full URL override for the API endpoint. [String]
+        "api": "api.domain.tld",
+        //Full URL override for the client-facing API endpoint. [String]
+        "api_client": "api-client.domain.tld",
+        //Full URL override for the Web app endpoint. [String]
+        "app": "app.domain.tld",
+        //Full URL override for the Gateway (WebSocket) endpoint. [String]
+        "gateway": "gateway.domain.tld",
+        //Full URL override for the Media endpoint. [String]
+        "media": "media.domain.tld",
+        //Full URL override for Static CDN endpoint. [String]
+        "static_cdn": "static.domain.tld",
+        //Full URL override for Admin Panel endpoint. [String]
+        "admin": "admin.domain.tld",
+        //Full URL override for the Marketing Site endpoint. [String]
+        "marketing": "marketing.domain.tld",
+        //Full URL override for Invite links. [String]
+        "invite": "invite.domain.tld",
+        //Full URL override for Gift links. [String]
+        "gift": "gift.domain.tld"
+    },
+    //Direct internal endpoints for backend services. In monolith mode these are served via paths on the main server.
+    "internal": {
+        //Internal Valkey/Redis URL for key-value operations. [String]
+        "kv": "redis://valkey:6379/0",
+        //Valkey/Redis connection mode. Use 'standalone' for a single node or 'cluster' for a Valkey/Redis cluster. [String]
+        "kv_mode": "standalone",
+        //List of cluster node URLs when kv_mode is 'cluster'. Each entry should be a host:port string. [Array]
+        "kv_cluster_nodes": [
+            {
+                //String
+                "host": "node1.domain.tld",
+                //Integer
+                "port": 6379
+            },
+            {
+                "host": "node2.domain.tld",
+                "port": 6379
+            }
+        ],
+        //NAT mapping for Valkey/Redis cluster nodes. Maps internal addresses to external addresses for NAT traversal.
+        "kv_cluster_nat_map": {
+            //Object
+            "my_cluster1": {
+                 //String
+                "host": "127.0.0.1",
+                //Integer
+                "port": 7000
+            }
+        }
+    },
+    //Internal URL for the Queue service. [String]
+    "queue": "http://fluxer-server:8088/queue",
+    //Internal URL for the Media Proxy service. [String]
+    "media_proxy": "http://fluxer-server:8088/media",
+    "database": {
+        //Selected database backend. 'sqlite' is for dev/single-node, 'cassandra' for production. "cassandra" or "sqlite" [String]
+        "backend": "cassandra",
+        //Configuration settings for Cassandra backend.
+        "cassandra": {
+            //Array of Cassandra contact points (hostnames or IPs). [Array]
+            "hosts": ["fluxer-cassandra"],
+            //Local Data Center name for topology awareness. [String]
+            "local_dc": "datacenter1",
+            //Cassandra authentication username. [String]
+            "username": "example_user",
+            //Cassandra authentication password. [String]
+            "password": "example_password",
+            //Cassandra keyspace name. [String]
+            "keyspace": "fluxer"
+        },
+        //sqlite example
+        "backend": "sqlite",
+        //Filesystem path to the SQLite database file.
+        "sqlite_path": "./data/fluxer.db"
+    },
+    //S3 connection configuration. 
+    "s3": {
+        //S3 service endpoint URL.. [String]
+        "endpoint": "http://127.0.0.1:8080/s3",
+        //Base URL for presigned download URLs. If not set, defaults to the endpoint value. Set this to a public URL when the endpoint is internal. [String]
+        "presigned_url_base": "presigned.domain.tld",
+        //S3 region. [String]
+        "region": "local",
+        //S3 Access Key ID. [String]
+        "access_key_id": "fluxer-local",
+        //S3 Secret Access Key. [String]
+        "secret_access_key": "fluxer-local-secret",
+        //Mapping of logical buckets to actual S3 bucket names. References s3_buckets.
+        "buckets": [{
+            //Configuration of specific S3 bucket names.
+            //Bucket for CDN assets. [String]
+            "cdn": "fluxer",
+            //Bucket for user uploads. [String]
+            "uploads": "fluxer-uploads",
+            //Bucket for downloads. [String]
+            "downloads": "fluxer-downloads",
+            //Bucket for report data.  [String]
+            "reports": "fluxer-reports",
+            //Bucket for data harvests. [String]
+            "harvests": "fluxer-harvests",
+            //Bucket for static site assets.
+            "static": "fluxer-static"
+        }]
+    },
+    //Rate limiting parameters.
+    "rate_limit": {
+        //Maximum number of requests allowed within the window. [Number]
+        "limit": 25,
+        //Time window in milliseconds. [Number]
+        "window_ms": 60
+    },
+    //Guild discovery listing configuration.
+    "discovery": {
+        //Whether guild discovery is enabled on this instance. [Boolean]
+        "enabled": true,
+        //Minimum number of members a guild needs before it can apply for discovery listing. [Number]
+        "min_member_count": 3
+    },
+    //Specific settings for this Fluxer instance.
+    "instance": {
+        //Indicates if this is a self-hosted instance. [Boolean]
+        "self_hosted": "true",
+        //Invite code to auto-join users to a guild upon registration. [String]
+        "auto_join_invite_code": "example",
+        //Guild ID for Visionary members. [String]
+        "visionaries_guild_id": "example1234",
+        //Guild ID for Operators. [String]
+        "operators_guild_id": "example4321",
+        //Path to the x25519 private key for E2E encryption (generated on first startup if missing). [String]
+        "private_key_path": "/app/example/ed25519.key"
+    },
+    //Federation configuration for connecting with other Fluxer instances.
+    "federation": {
+        //Enable federation with other Fluxer instances. [Boolean, not implemented yet?]
+        "enabled": "false"
+    },
+    //CSAM (Child Sexual Abuse Material) compilance configuration.
+    "csam": {
+        //Days to retain evidence. [Number]
+        "evidence_retention_days": 730,
+        //Days to retain reporting jobs. [Number]
+        "job_retention_days": 365,
+        //Batch size for cleanup operations. [Number]
+        "cleanup_batch_size": 100,
+        //CSAM scan queue configuration
+        "queue": {
+            //Maximum time to wait for a scan result (ms). [Number]
+            "timeout_ms": 30000,
+            //Maximum queue entries to process per consumer run. [Number]
+            "max_entries_per_batch": 5,
+            //TTL for consumer lock (seconds). [Number]
+            "consumer_lock_ttl_seconds": 5
+        }
+    },
+    //Development environment flags.
+    "dev" : {
+        //Relax rate limits for registration. [Boolean]
+        "relax_registration_rate_limits": false,
+        //Disable all rate limits. [Boolean]
+        "disable_rate_limits": false,
+        //Enable test mode behaviors. [Boolean]
+        "test_mode_enabled": false,
+        //Token for the test harness. [String]
+        "test_harness_token": ""
+    },
+    //GeoIP database settings.
+    "geoip": {
+        //Path to MaxMind GeoIP database.
+        "maxmind_db_path": "/app/example/GeoLite2-Country.mmdb"
+    },
+    //Proxy configuration
+    "proxy": {
+        //Trust Cloudflare's CF-Connecting-IP header. [Boolean]
+        "trust_cf_connecting_ip": false
+    },
+    //Alerting settings
+    "alerts": {
+        //Webhook URL for system alerts. [String]
+        "webhook_url": ""
+    },
+    //OpenTelemetry observability settings.
+    "telemetry": {
+        //Enable OpenTelemetry. [Boolean]
+        "enabled": false,
+        //OTLP collector endpoint. [String]
+        "otlp_endpoint": "",
+        //API key for telemetry service.
+        "api_key": "",
+        //Service name reported to telemetry [String]
+        "service_name": "fluxer",
+        //Environment name (dev, prod, etc.) [String]
+        "environemnt": "prod",
+        //Sampling ratio for traces (0.0 to 1.0) [Number]
+        "trace_sampling_ratio": 1.0,
+        //Interval in milliseconds between metric exports [Number]
+        "metric_export_interval_ms": 60000,
+        //HTTP paths to exclude from tracing. [Array]
+        "ignore_incoming_paths": ["/_health"]
+    },
+    //Sentry configuration
+    "sentry": {
+        //Enable Sentry reporting. [String]
+        "enabled": false,
+        //Sentry DSN. [String]
+        "dns": ""
+    },
+    //Public configuration exposed to the frontend application.
+    "app_public": {
+        //API version [Number]
+        "api_version": 1,
+        //Public Bootstrap API endpoint
+        "bootstrap_api_endpoint": "",
+        //Frontend Sentry DSN.
+        "sentry_dsn": ""
+    },
+    //Global authentication configuration.
+    "auth": {
+        //Secret key for verifying sudo mode tokens.
+        "sudo_mode_secret": "GENERATE_A_64_CHAR_HEX_SECRET",
+        //Secret key for signing connection initiation tokens.
+        "connection_initiation_secret": "GENERATE_A_64_CHAR_HEX_SECRET",
+        //VAPID keys for Web Push Notifications.
+        //You can generate them for ex. https://www.stephane-quantin.com/en/tools/generators/vapid-keys
+        "vapid": {
+            //req: public_key, private_key
+            //VAPID Public Key. [String]
+            "public_key": "",
+            //VAPID Private Key. [String]
+            "private_key": "",
+            //Contact email included in push requests. [String]
+            "email": ""
+        },
+        //WebAuthn/Passkeys relying party settings.
+        "passkeys": {
+            //Relying Party name displayed to users. [String]
+            "rp_name": "Fluxer",
+            //Relying Party ID (domain) for WebAuthn credentials. [String]
+            "rp_id": "fluxer.app",
+            //List of allowed origins for WebAuthn registration/authentication. [Array]
+            "additional_allowed_origins": ["https://web.fluxer.app", "https://web.canary.fluxer.app"]
+        },
+        //Bluesky OAuth client configuration.
+        "bluesky": {
+            //Whether Bluesky Oauth connections are enabled. [Boolean]
+            "enabled": false,
+            //Human-readable client name exposed to Bluesky. [String]
+            "client_name": "Fluxer",
+            //URI describing the client application. [String]
+            "client_uri": "https://example.doamin.tld/meow",
+            //Optional logo presented during authorization. [String]
+            "logo_uri": "https://fluxerstatic.com/web/apple-touch-icon.png",
+            //Terms of service URI exposed to Bluesky. [String]
+            "tos_uri": "https://fluxer.app/terms",
+            //Privacy policy URI exposed to Bluesky. [String]
+            "policy_uri": "https://fluxer.app/privacy",
+            //Key definitions used to sign private key.
+            "keys": [{
+                //JSON Web Key ID used when signing private key JWTs. [String]
+                "kid": "",
+                //PEM-encoded private key used to authenticate to the Bluesky token endpoint. [String]
+                "private_key": "",
+                //Absolute filesystem path to a PEM private key file. Must be an absolute path because services may run from different working directories. Use this instead of private_key to avoid embedding the key in the config. [String]
+                "private_key_path": "/app/example/key"
+            }]
+        }
+    },
+    //Session cookie configuration.
+    "cookie": {
+        //Domain attribute for cookies. Leave empty for host-only. [String]
+        "domain": "",
+        //If true, sets the Secure flag on cookies. [Boolean]
+        "default": false
+    },
+    //Container for all service-specific configurations.
+    "services": {
+        "server": {
+            //Port to listen on. [Number]
+            "port": 8080,
+            //Network interface to bind to. [String]
+            "host": "0.0.0.0",
+            //Path to static assets directory for the web app. Required in production. [String]
+            "static_dir": "/usr/src/app/assets"
+        },
+        //Configuration for the Media Proxy service.
+        "media_proxy": {
+            //Secret key used to sign and verify media URL [String]
+            "secret_key": "GENERATE_A_64_CHAR_HEX_SECRET",
+            //If true, strictly requires requests to originate from Cloudflare edge IPs. [Boolean]
+            "require_cloudflare_edge": false,
+            //If true, enables serving static files directly. [Boolean]
+            "static_mode": false,
+            //Port to listen on. [Number]
+            "port": 8080,
+            //Network interface to bind to. [String]
+            "host": "0.0.0.0",
+            //Rate limiting configuration for the Media Proxy.
+            "rate_limit": {
+                //Maximum number of requests allowed within the window. [Number]
+                "limit": 25,
+                //Time window in milliseconds. [Number]
+                "window_ms": 60
+            }
+        },
+        //Configuration for the Admin Panel service.
+        "admin": {
+            //Base secret key for signing admin session tokens. [String]
+            "secret_key_base": "GENERATE_A_64_CHAR_HEX_SECRET",
+            //Base secret key for signing admin session tokens. [String]
+            "oauth_client_secret": "GENERATE_A_64_CHAR_HEX_SECRET",
+            //URL base path for the admin interface. [String]
+            "base_path": "/admin",
+            //Rate limiting confgiuration for the admin server. [String]
+            "rate_limit": {
+                //Maximum number of requests allowed within the window. [Number]
+                "limit": 25,
+                //Time window in milliseconds. [Number]
+                "window_ms": 60
+            }
+        },
+        //Configuration for the main API service.
+        "api": {
+            //Port to listen on. [Number]
+            "port": 8080,
+            //Network interface to bind to. [String]
+            "host": "0.0.0.0",
+            //List of hostnames or IPs to ignore when unfurling URLs. [Array]
+            "unfurl_ignored_hosts": ["localhost", "127.0.0.1"]
+        },
+        //Configuration for the App Proxy service (frontend server).
+        "app_proxy": {
+            //Port to listen on. [Number]
+            "port": 8773,
+            //URL endpoint for serving static assets via CDN. [String]
+            "static_cdn_endpoint": "",
+            //Filesystem directory containing static assets. [String]
+            "assets_dir": "./assets"
+        },
+        "s3": {
+            //Network interface to bind to. [String]
+            "host": "0.0.0.0",
+            //Filesystem path to store S3 data objects. [String]
+            "data_dir": "./data/s3",
+            //Timeout in milliseconds for data export operations. [Number]
+            "export_timeout": 30000,
+            //Rate limiting configuration for the S3 service. [String]
+            "rate_limit": {
+                //Maximum number of requests allowed within the window. [Number]
+                "limit": 25,
+                //Time window in milliseconds. [Number]
+                "window_ms": 60
+            }
+        },
+        "gateway": {
+            //Port to listen on. [Number]
+            "port": 8082,
+            //Secret used to trigger code hot-swapping/reloads [String]
+            "admin_reload_secret": "GENERATE_A_64_CHAR_HEX_SECRET",
+            //Enable rate limiting for Gateway IDENTIFY opcodes. [Boolean]
+            "identify_rate_limit_enabled": false,
+            //Enable push notification delivery. [String]
+            "push_enabled": true,
+            //Memory cache size (MB) for user guild settings. [Number]
+            "push_user_guild_settings_cache_mb": 1024,
+            //Memory cache size (MB) for push subscriptions. [Number]
+            "push_subscriptions_cache_mb": 1024,
+            //Memory cache size (MB) for blocked user IDs. [Number]
+            "push_blocked_ids_cache_mb": 1024,
+            //Memory cache size (MB) for badge counts. [Number]
+            "push_badge_counts_cache_mb": 256,
+            //TTL in seconds for badge counts cache. [Number]
+            "push_badge_counts_cache_ttl_seconds": 60,
+            //Endpoint URL of the Media Proxy service. [String]
+            "media_proxy_endpoint": "http://127.0.0.1:8080/media",
+            //Logging level (e.g., debug, info, warn, error) [String]
+            "logger_level": "info",
+            //Erlang node name for the release. [String]
+            "release_node": "fluxer_gateway@gateway",
+            //Enable collection of gateway metrics. [Boolean]
+            "gateway_metrics_enabled": false,
+            //Interval in milliseconds to report gateway metrics. [Number]
+            "gateway_metrics_report_interval_ms": 30000,
+            //Number of shards for presence cache. [Number]
+            "presence_cache_shards": 1,
+            //Number of shards for presence message bus. [Number]
+            "presence_bus_shards": 1,
+            //Number of shards for presence handling. [Number]
+            "presence_shards": 1,
+            //Number of shards for guild handling. [Number]
+            "guild_shards": 1
+        },
+        //Configuration for the Marketing site service.
+        "marketing": {
+            //Whether to enable the Marketing service within fluxer_server. [Boolean]
+            "enabled": true,
+            //Base secret key for marketing site sessions/tokens. [String]
+            "secret_key_base": "GENERATE_A_64_CHAR_HEX_SECRET",
+            //Network interface to bind to. [String]
+            "host": "0.0.0.0",
+            //Port to listen on. [Number]
+            "port": 8774,
+            //URL base path for the marketing site.
+            "base_path": "/marketing"
+        },
+        //Configuration for NATS messaging.
+        "nats": {
+            //NATS Core server URL for RPC. [String]
+            "core_url": "nats://fluxer-nats:4222",
+            //NATS JetStream server URL for job queues. [String]
+            "jetstream_url": "nats://fluxer-nats:4222",
+            //Authentication token for NATS connections. [String]
+            "auth_token": ""
+        },
+        //Configuration for the Job Queue service.
+        "queue": {
+            //Port to listen on. [Number]
+            "port": 8088,
+            //Number of concurrent worker threads. [Number]
+            "concurrency": 1,
+            //Filesystem path to store queue data. [String]
+            "data_dir": "./data/queue",
+            //Default time in milliseconds a message remains invisible after being received. [Number]
+            "default_visibility_timeout_ms": 30000,
+            //Interval in milliseconds to take queue snapshots. [Number]
+            "snapshot_every_ms": 60000,
+            //Number of operations after which to take a queue snapshot. [Number]
+            "snapshot_after_ops": 10000,
+            //Zstd compression level for snapshots (1-22). [Number]
+            "snapshot_zstd_level": 3,
+            //Secret for queue API authentication. [String]
+            "secret": ""
+        }
+    },
+    //
+    "integrations": {
+        //SMTP transport configuration for email delivery.
+        "email": {
+            "enabled": true,
+            "provider": "smtp",
+            "webhook_secret": "base64-secret",
+            "from_email": "noreply@example.com",
+            "from_name": "Fluxer",
+            "smtp": {
+                "host": "smtp.mailserver.com",
+                "port": 587,
+                "username": "noreply@example.com",
+                "password": "super-secret-password",
+                "secure": true
+            }
+        },
+        //SMS (Twilio)
+        "sms": {
+            "enabled": true,
+            "account_sid": "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "auth_token": "your_twilio_auth_token",
+            "verify_service_sid": "VAXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+        },
+        //CSAM content scanning & reporting (PhotoDNA) - Unusable for self-hosters (so pointless to comment out)
+        //This snippet is currently unused in the code, there's only photo_dna that you have to put manually.
+        // https://github.com/fluxerapp/fluxer/blob/refactor/packages/config/src/schema/defs/integrations/csam.json
+        // You may crash with this on here.
+        //So this snippet for now will not work, but may in the future.
+        "csam": {
+            "enabled": true,
+            "provider": "photo_dna",
+            "photo_dna": {
+                "hash_service_url": "https://photodna.example.com/hash",
+                "hash_service_timeout_ms": 15000,
+                "match_endpoint": "https://photodna.example.com/match",
+                "subscription_key": "your-subscription-key",
+                "match_enhance": false,
+                "rate_limit_rps": 5
+            }
+        },
+        //CSAM content scanning & reporting (Arachnid Shield) - Unusable for self-hosters (so pointless to comment out)
+        //This snippet is currently unused in the code, there's only photo_dna that you have to put manually.
+        //ex. https://github.com/fluxerapp/fluxer/blob/refactor/packages/config/src/schema/defs/integrations/photo_dna.json
+        //vs. https://github.com/fluxerapp/fluxer/blob/refactor/packages/config/src/schema/defs/integrations/csam.json
+        //So this snippet for now will not work, but may in the future.
+        "csam" : {
+            "enabled": true,
+            "provider": "arachnid_shield",
+            "photo_dna": {},
+            "arachnid_shield": {
+                "endpoint": "https://shield.projectarachnid.com/v1/media",
+                "username": "your-username",
+                "password": "your-password",
+                "timeout_ms": 30000,
+                "max_retries": 3,
+                "retry_backoff_ms": 1000
+            }
+        },
+        //NCMEC Cybertipline integration.
+        //More information here -- https://www.missingkids.org/gethelpnow/cybertipline
+        //Public instances should probably set this one. Although I doubt it may work without PhotoDNA / Arachnid Shield
+        //This is for reporting missing & exploited children so naturally CSAM & child abuse material should be reported here.
+        "ncmec": {
+            "enabled": true,
+            "base_url": "https://report.cybertip.org/ispws",
+            "username": "your-ncmec-username",
+            "password": "your-ncmec-password"
+        },
+        //Cloudflare integration. (not much to know here)
+        "cloudflare": {
+            //Enable automatic cache purging.
+            "purge_enabled": true,
+            //Cloudflare Zone ID.
+            "zone_id": "your-cloudflare-zone-id",
+            //Cloudflare API token for cache purge.
+            "api_token": "your-cloudflare-api-token"
+        },
+        //ClamAV integration (basically like an antivirus, you probably want this on public instances.)
+        "clamav": {
+            "enabled": true,
+            "host": "clamav",
+            "port": 3310,
+            "fail_open": true
+        },
+        //In case you really wanna hook up Stripe up to this so people can buy memberships.
+        "stripe": {
+            "enabled": true,
+            "secret_key": "sk_live_123456789",
+            "webhook_secret": "whsec_abcdef123456",
+            "prices": {
+                "monthly_usd": "price_123",
+                "monthly_eur": "price_456",
+                "yearly_usd": "price_789",
+                "yearly_eur": "price_abc",
+                "visionary_usd": "",
+                "visionary_eur": "",
+                "gift_visionary_usd": "",
+                "gift_visionary_eur": "",
+                "gift_1_month_usd": "",
+                "gift_1_month_eur": "",
+                "gift_1_year_usd": "",
+                "gift_1_year_eur": ""
+            }
+        },
+        //This is to select your GIF provider.
+        //Only Tenor and Klipy are supported as of now.
+        "gif": {
+            "provider": "klipy"
+        },
+        //Don't wanna use this 'cus google is killing Search API, which will render this useless.
+        "tenor": {
+            "api_key": "your_tenor_api_key"
+        },
+        //KLIPY
+        "klipy": {
+            "api_key": "klipy_api_key"
+        },
+        //Probably used for YouTube embeds?
+        "youtube": {
+            "api_key": "your_youtube_gcloud_api_key"
+        },
+        //Configuration for a specific CAPTCHA provider. (hCaptcha)
+        "captcha": {
+            //Enable CAPTCHA verification. [Boolean]
+            "enabled": true,
+            //Selected CAPTCHA provider. [String]
+            //enum: hcaptcha, turnstile, none
+            "provider": "hcaptcha",
+            //hCaptcha settings.
+            "hcaptcha": {
+                "site_key": "hcaptcha-site-key",
+                "secret_key": "hcaptcha-secret-key"
+            }
+        },
+        //Cloudflare Turnstile
+        "captcha": {
+            "enabled": true,
+            "provider": "turnstile",
+            //Cloudflare Turnstile settings.
+            "turnstile": {
+                "site_key": "turnstile-site-key",
+                "secret_key": "turnstile-secret-key"
+            }
+        },
+        //Meilisearch for search example
+        //Schema for some reason doesn't allow basic auth here, but does on Elasticsearch?
+        //Comments may be misleading.
+        //https://github.com/fluxerapp/fluxer/blob/refactor/packages/config/src/schema/defs/integrations/search.json
+        "search": {
+            "engine": "meilisearch",
+            "url": "http://meilisearch:7700",
+            "api_key": "master_generated_or_admin_key"
+        },
+        //Elasticsearch with API keys
+        "search": {
+            "engine": "elasticsearch",
+            "url": "https://es.domain.tld",
+            "api_key": "base64encoded_api_key"
+        },
+        //Elasticsearch with Basic Auth
+        "search": {
+            "engine": "elasticsearch",
+            "url": "https://es.domain.tld",
+            "api_key": "",
+            "username": "elastic",
+            "password": "yourpassword"
+        },
+        //LiveKit with region bootstrap (LLM generated, too lazy rn)
+        "voice": {
+            "enabled": true,
+            "api_key": "LK_API_KEY_HERE",
+            "api_secret": "LK_API_SECRET_HERE",
+            "webhook_url": "https://lk.domain.tld/livekit/webhook",
+            "url": "wss://lk.domain.tld",
+            "default_region": {
+            "id": "default",
+            "name": "Default Region",
+            "emoji": "🌐",
+            "latitude": 0.0,
+            "longitude": 0.0
+            }
+        },
+        //LiveKit but with no region bootstrap.
+        "voice": {
+            "enabled": true,
+            "api_key": "LK_API_KEY",
+            "api_secret": "LK_API_SECRET",
+            "url": "wss://lk.domain.tld",
+            "webhook_url": "https://lk.domain.tld/api/webhooks/livekit"
+        }
+    }
+}
