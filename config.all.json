@@ -1,5 +1,5 @@
 {
-    //Comments are invalid and are provided to explain things here (pulled from config schema, some are mine though. If it doesn't sound professional then that's me, probably.)
+    //Comments are invalid and are provided to explain things here (pulled from config schema)
     //This configuration file in itself is invalid and only serves as a example of ALL possible configuration values.
     "env": "production",
     //Configuration for domains and ports used to construct public URLs
@@ -604,6 +604,7 @@
         },
         //Meilisearch for search example
         //Schema for some reason doesn't allow basic auth here, but does on Elasticsearch.
+        //Maybe the comment is wrong?
         //https://github.com/fluxerapp/fluxer/blob/refactor/packages/config/src/schema/defs/integrations/search.json
         "search": {
             "engine": "meilisearch",
