@@ -3,13 +3,11 @@ Experimenting around with self-hosting Fluxer early
 
 ## More about this small project
 
-The current Dockerfile is pretty outdated, won't build without substantial modifications to it. I've spent a bit of time actually working around it 'cus quite frankly, it's a mess on a greater scale. I've mostly relied on my self-hosted LLM for advice regarding fixing pnpm build errors for a monorepo which more or so ended up allowing me to get 50% there - the Containerfile is still written by me. I use it for debugging, not vibecoding and even then I'd rather use a search engine.  (once again, it was late night when I had a knack to try this so since it was running, why not try it. well it got some things right and other so terribly wrong that I started running in circles after a bit xd)
+The current Dockerfile is pretty outdated, won't build without modifications to it. It's a bit of a mess here 'n' there but nothing you can't fix yourself. I wish it ran by rootless user by default inside container though. (my containerfile does that :p)
 
-I had issues with building the image as suddenly the language directories were always missing 'cus apparently `.dockerignore`  excludes them (???)
+I've relied on my self-hosted LLM for advice regarding fixing `pnpm` build errors, it got me a bit there but the rest was community and their pro-tips in regards to fixing everything. It was randomly threw up at 3 in the morning and well I've just fixed it up and made it actually build the server. There's few errors here 'n' there, mainly with `.dockerignore` that the main repository has but nothing you can't go arouund.
 
-Thanks to this AI generated [gist](https://gist.github.com/PaulMColeman/e7ef82e05035b24300d2ea1954527f10) I've found on the internet for helping me figure out the last missing piece, which was the build failing 'cus `pnpm compile:lungui` silently didn't do anything.
-
-+ Shoutouts to this [guide](https://github.com/orgs/fluxerapp/discussions/542) on Fluxer's discussions.
+Shoutouts to this [guide](https://github.com/orgs/fluxerapp/discussions/542) on Fluxer's discussions.
 
 I've seen pretty misleading comments about this so let me clarify, the `fluxer_server` container intended for self-hosting bundles following components into a single container image:
 
@@ -18,18 +16,19 @@ I've seen pretty misleading comments about this so let me clarify, the `fluxer_s
 - fluxer_gateway (not sure what it does, `rebar3` is used to compile it though. Might be related to payment gateway?)
 - fluxer_media_proxy (if you use nsfw detection model then it just copies the model to /opt/data/model.onnx but doesn't build the app. maybe it does but iunno. Not a nodejs guy.)
 
-Probably more, or less. It's a giant monolith, which means it's not just "fluxer_server" and that's it. It's actually 4-5 (maybe more) components running in a single container image. Similar to stoat but stoat still makes you run each component seperately (which is good for what it is. That's the point of containers, isolation between each other, though it adds a lot of friction and complexity to deployment.)
+Probably more, or less. It's a giant monolith, which means it's few services running inside a singular container. It makes deployment easier but well is considered a bad approach if we look at it from container spec perspective. But well you pay for convenience a little bit, don't ya?
 
 ## What the Containerfile does
 
-At production stage, instead of running it as root, it chowns everything as `node:node` user with 555 permissions before forking off to node:node user and running the image. It also installs rust toolchain very early on in the image, I didn't bother installing wasm-pack as it manually figures it out and does it by itself.
+It can be a direct replacement for the Dockerfile inside `fluxer_server` directory. It builds from root of the project.
+
+I've updated it to mimmick build process of the official image better and also for it to be much more readable. At the production stage, it chowns various directories as `node:node` user and changes permissions to `read, execute`. Then it runs as `node:node` user and uses `tini` with `TINI_SUBREAPER=1` to yeet some stale processes if they ever pop up inside the container. At production stage, instead of running it as root, it chowns everything as `node:node` user with 555 permissions before forking off to node:node user and running the image. It also installs rust toolchain very early on in the image, I didn't bother installing wasm-pack as it manually figures it out and does it by itself.
+
+You still must fix the source manually yourself.
 
 ## Should you run this?
 
-> [!NOTE]
-> Community discussion fixes most of this so you can probably run it just fine. Can't promise that it won't explode suddenly if official builds release.
-
-Probably not. A lot of things are hardcoded in code so some silly things such as [timing out while uploading a file](https://github.com/fluxerapp/fluxer/issues/582) can occur. [SSO functionality is apparently also broken](https://github.com/fluxerapp/fluxer/issues/556). refactor repo changed a lot of things around but there are still critical bugs and issues with hardcoded values flying here 'n' there. Use de-federated Matrix in the meantime.
+Without any manual fixing done by you based on community findings, not really. If you're also not familiar with self-hosting such a monolith at a larger scale then this will be a nice challenge for you, it's not that hard it's just *annoying* in it's current state.
 
 ## Building the image
 
@@ -45,7 +44,85 @@ In case you wanna build desktop client properly then [this fork makes it possibl
 
 ### Modifying files
 
-[Follow this instead](https://github.com/orgs/fluxerapp/discussions/542#discussioncomment-15922947)
+[Follow this instead and if you're stuck, read below](https://github.com/orgs/fluxerapp/discussions/542#discussioncomment-15922947)
+
+You may also need to add following to your `.dockerignore`:
+
+```bash
+!fluxer_gateway/rebar.lock*
+!fluxer_app/scripts/build
+!fluxer_app/scripts/build/**
+```
+
+When it comes to fixing SSO:
+
+`fluxer_app/src/router/components/RootComponent.tsx`:
+
+The 'allow list' they talk about is this start of the snippet:
+
+```bash
+  const isStandaloneRoute = useMemo(() => {
+    return (
+      pathname.startsWith(Routes.LOGIN) ||
+      pathname.startsWith(Routes.REGISTER) ||
+      pathname.startsWith(Routes.FORGOT_PASSWORD) ||
+      pathname.startsWith(Routes.RESET_PASSWORD) ||
+      pathname.startsWith(Routes.VERIFY_EMAIL) ||
+      pathname.startsWith(Routes.AUTHORIZE_IP) ||
+      pathname.startsWith(Routes.EMAIL_REVERT) ||
+      pathname.startsWith(Routes.OAUTH_AUTHORIZE) ||
+      pathname.startsWith(Routes.REPORT) ||
+      pathname.startsWith(Routes.PREMIUM_CALLBACK) ||
+      pathname.startsWith(Routes.CONNECTION_CALLBACK) ||
+      pathname === '/__notfound' ||
+      pathname.startsWith('/invite/') ||
+      pathname.startsWith('/gift/') ||
+      pathname.startsWith('/theme/')
+    );
+  }, [pathname]);
+```
+
+You append `pathname.startsWith('/auth/sso/callback') ||` below `pathname.startsWith(Routes.CONNECTION_CALLBACK) ||`. Below is how it looks like with that extra added.
+
+```bash
+  const isStandaloneRoute = useMemo(() => {
+    return (
+        pathname.startsWith(Routes.LOGIN) ||
+        pathname.startsWith(Routes.REGISTER) ||
+        pathname.startsWith(Routes.FORGOT_PASSWORD) ||
+        pathname.startsWith(Routes.RESET_PASSWORD) ||
+        pathname.startsWith(Routes.VERIFY_EMAIL) ||
+        pathname.startsWith(Routes.AUTHORIZE_IP) ||
+        pathname.startsWith(Routes.EMAIL_REVERT) ||
+        pathname.startsWith(Routes.OAUTH_AUTHORIZE) ||
+        pathname.startsWith(Routes.REPORT) ||
+        pathname.startsWith(Routes.PREMIUM_CALLBACK) ||
+        pathname.startsWith(Routes.CONNECTION_CALLBACK) ||
+        pathname.startsWith('/auth/sso/callback') ||
+        pathname === '/__notfound' ||
+        pathname.startsWith('/invite/') ||
+        pathname.startsWith('/gift/') ||
+        pathname.startsWith('/theme/')
+    );
+  }, [pathname]);
+```
+
+User.tsx is in `packages/api/src/models/User.tsx` and they talk about this line:
+
+```bash
+	isUnclaimedAccount(): boolean {
+		return this.passwordHash === null && !this.isBot;
+	}
+```
+
+You just add `&& !this._traits.has('sso')` to `return this.passwordHash === null && !this.isBot;`
+
+```bash
+	isUnclaimedAccount(): boolean {
+		return this.passwordHash === null && !this.isBot && !this._traits.has('sso');
+	}
+```
+
 
 ### Actually building the multi-service container
 
