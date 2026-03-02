@@ -7,7 +7,7 @@ The current Dockerfile is pretty outdated, won't build without modifications to 
 
 I've relied on my self-hosted LLM for advice regarding fixing `pnpm` build errors, it got me a bit there but the rest was community and their pro-tips in regards to fixing everything. It was randomly threw up at 3 in the morning and well I've just fixed it up and made it actually build the server. There's few errors here 'n' there, mainly with `.dockerignore` that the main repository has but nothing you can't go arouund.
 
-Shoutouts to this [guide](https://github.com/orgs/fluxerapp/discussions/542) on Fluxer's discussions.
+Shoutouts to this [guide](https://github.com/orgs/fluxerapp/discussions/542) on Fluxer's discussions, and I suppose shoutouts to Claude for generating [this gist](https://gist.github.com/PaulMColeman/e7ef82e05035b24300d2ea1954527f10)
 
 I've seen pretty misleading comments about this so let me clarify, the `fluxer_server` container intended for self-hosting bundles following components into a single container image:
 
@@ -37,7 +37,7 @@ Make a directory called fluxer and cd into it `mkdir -p ~/fluxer && cd ~/fluxer`
 
 Apply fixes from 'Modifying files' afterwards.
 
-In case you wanna build desktop client properly then [this fork makes it possible](https://github.com/mgabor3141/fluxer).w
+In case you wanna build desktop client properly then [this fork makes it possible](https://github.com/mgabor3141/fluxer)
 
 ### Modifying files
 
@@ -146,6 +146,16 @@ This took me around 15 minutes to complete on 2 cores of i3-7100 so if you have 
 
 ## Running it
 
+All that's needed:
+
+- fluxer_server
+- Cassandra
+- Valkey
+- NATS
+- Meilisearch
+- LiveKit (on VPS)
+- Reverse Proxy (on VPS)
+
 It makes use of Valkey (Redis-compatible alternative pretty much, presumably for caching and session storage), Meilisearch (for search functionality), LiveKit as a SFU for your typical Voice & Video Chat needs, Nats for Pub/Sub messaging and persistent job queue [if this gist is to be any believed, not sure if the gist author did bare minimum of fact checking the LLM here](https://gist.github.com/PaulMColeman/e7ef82e05035b24300d2ea1954527f10)
 
 You'll almost likely will want to mount a valid config and point the `FLUXER_CONFIG` to it.
@@ -174,7 +184,3 @@ Node.js v24.14.0
  ```
 
 //todo
-
-## Why does Containerfile have weird spacing?
-
-I threw it up randomly one of these nights so formatting is just utterly screwed up in places. I've tried fixing it up but ya, it is what it is. I've had more proper copy somewhere but I've lost it so this notepad++ backup is the best ya gonna get.
