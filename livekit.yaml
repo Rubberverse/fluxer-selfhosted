@@ -1,0 +1,23 @@
+port: 7880
+rtc:
+    tcp_port: 7881
+    port_range_start: 50100
+    port_range_end: 50200
+    use_external_ip: true
+    enable_loopback_candidate: false
+turn:
+    enabled: false
+    domain: lk.domain.tld
+    tls_port: 5349
+    udp_port: 3478
+    external_tls: true
+room:
+    auto_create: true
+    max_participants: 100
+    empty_timeout: 300
+webhook:
+    api_key: "24_character_string_corresponding_to_keys"
+    urls:
+       - https://lk.domain.tld/api/webhooks/livekit
+keys:
+    24_character_string: 64_character_string
