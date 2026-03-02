@@ -82,7 +82,7 @@ The 'allow list' they talk about is this start of the snippet:
   }, [pathname]);
 ```
 
-You append `pathname.startsWith('/auth/sso/callback') ||` below `pathname.startsWith(Routes.CONNECTION_CALLBACK) ||`. Below is how it looks like with that extra added.
+(not sure on this one) You append `pathname.startsWith('/auth/sso/callback') ||` below `pathname.startsWith(Routes.CONNECTION_CALLBACK) ||`. Below is how it looks like with that extra added.
 
 ```bash
   const isStandaloneRoute = useMemo(() => {
