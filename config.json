@@ -1,0 +1,77 @@
+{
+    "env": "production",
+    "domain": {
+        "base_domain": "chat.domain.tld",
+        "public_scheme": "https",
+        "public_port": 443
+    },
+    "database": {
+        "backend": "cassandra",
+        "cassandra": {
+            "hosts": ["fluxer-cassandra"],
+            "local_dc": "datacenter1",
+            "username": "username",
+            "password": "password",
+            "keyspace": "fluxer"
+        }
+    },
+    "internal": {
+        "kv": "redis://valkey:6379/0",
+        "kv_mode": "standalone"
+    },
+    "s3": {
+        "access_key_id": "fluxer-local",
+        "secret_access_key": "fluxer-local-secret",
+        "endpoint": "http://127.0.0.1:8080/s3"
+    },
+    "services": {
+        "server": {
+            "port": 8080,
+            "host": "0.0.0.0",
+            "static_dir": "/usr/src/app/assets"
+        },
+        "media_proxy": {
+            "secret_key": "GENERATE_A_64_CHAR_HEX_SECRET"
+        },
+        "admin": {
+            "secret_key_base": "GENERATE_A_64_CHAR_HEX_SECRET",
+            "oauth_client_secret": "GENERATE_A_64_CHAR_HEX_SECRET"
+        },
+        "marketing": {
+            "enabled": true,
+            "secret_key_base": "GENERATE_A_64_CHAR_HEX_SECRET"
+        },
+        "gateway": {
+            "port": 8082,
+            "admin_reload_secret": "GENERATE_A_64_CHAR_HEX_SECRET",
+            "media_proxy_endpoint": "http://127.0.0.1:8080/media"
+        },
+        "nats": {
+            "core_url": "nats://fluxer-nats:4222",
+            "jetstream_url": "nats://fluxer-nats:4222",
+            "auth_token": ""
+        }
+    },
+    "auth": {
+        "sudo_mode_secret": "GENERATE_A_64_CHAR_HEX_SECRET",
+        "connection_initiation_secret": "GENERATE_A_64_CHAR_HEX_SECRET",
+        "vapid": {
+            "public_key": "public_vapid_key",
+            "private_key": "private_vapid_key"
+        }
+    },
+    "integrations": {
+        "search": {
+            "engine": "meilisearch",
+            "url": "http://meilisearch:7700",
+            "api_key": "meili_api_key"
+        },
+        "voice": {
+            "enabled": true,
+            "api_key": "livekit_api_key",
+            "api_secret": "livekit_api_secret",
+            "url": "wss://lk.domain.tld",
+            "webhook_url": "https://lk.domain.tld/api/webhooks/livekit"
+        }
+    }
+}
