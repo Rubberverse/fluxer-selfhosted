@@ -11,20 +11,17 @@ Shoutouts to this [guide](https://github.com/orgs/fluxerapp/discussions/542) on 
 
 I've seen pretty misleading comments about this so let me clarify, the `fluxer_server` container intended for self-hosting bundles following components into a single container image:
 
-- fluxer_server (back-end, pnpm/nodejs/whatever mix)
-- fluxer_app (front-end in Rust, I suppose it also makes use of fluxer_app_proxy)
-- fluxer_gateway (not sure what it does, `rebar3` is used to compile it though. Might be related to payment gateway?)
-- fluxer_media_proxy (if you use nsfw detection model then it just copies the model to /opt/data/model.onnx but doesn't build the app. maybe it does but iunno. Not a nodejs guy.)
+- fluxer_server
+- fluxer_app
+- fluxer_gateway
 
 Probably more, or less. It's a giant monolith, which means it's few services running inside a singular container. It makes deployment easier but well is considered a bad approach if we look at it from container spec perspective. But well you pay for convenience a little bit, don't ya?
 
 ## What the Containerfile does
 
-It can be a direct replacement for the Dockerfile inside `fluxer_server` directory. It builds from root of the project.
+It can be a direct replacement for the Dockerfile inside `fluxer_server` directory. It builds from root of the project and works around all build-time problems to date. Still need to fix the source manually yourself though.
 
 I've updated it to mimmick build process of the official image better and also for it to be much more readable. At the production stage, it chowns various directories as `node:node` user and changes permissions to `read, execute`. Then it runs as `node:node` user and uses `tini` with `TINI_SUBREAPER=1` to yeet some stale processes if they ever pop up inside the container. At production stage, instead of running it as root, it chowns everything as `node:node` user with 555 permissions before forking off to node:node user and running the image. It also installs rust toolchain very early on in the image, I didn't bother installing wasm-pack as it manually figures it out and does it by itself.
-
-You still must fix the source manually yourself.
 
 ## Should you run this?
 
