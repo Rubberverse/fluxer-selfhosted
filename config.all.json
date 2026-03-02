@@ -1,5 +1,5 @@
 {
-    //Comments are invalid and are provided to explain things here (pulled from config schema)
+    //Comments are invalid and are provided to explain things here (pulled from config schema, some are mine though. If it doesn't sound professional then that's me, probably.)
     //This configuration file in itself is invalid and only serves as a example of ALL possible configuration values.
     "env": "production",
     //Configuration for domains and ports used to construct public URLs
@@ -456,7 +456,7 @@
             "secret": ""
         }
     },
-    //
+    //Integrations container for all integrations.
     "integrations": {
         //SMTP transport configuration for email delivery.
         "email": {
@@ -482,8 +482,8 @@
         },
         //CSAM content scanning & reporting (PhotoDNA) - Unusable for self-hosters (so pointless to comment out)
         //This snippet is currently unused in the code, there's only photo_dna that you have to put manually.
-        // https://github.com/fluxerapp/fluxer/blob/refactor/packages/config/src/schema/defs/integrations/csam.json
-        // You may crash with this on here.
+        //https://github.com/fluxerapp/fluxer/blob/refactor/packages/config/src/schema/defs/integrations/csam.json
+        //You may crash with this in your config.
         //So this snippet for now will not work, but may in the future.
         "csam": {
             "enabled": true,
@@ -501,6 +501,7 @@
         //This snippet is currently unused in the code, there's only photo_dna that you have to put manually.
         //ex. https://github.com/fluxerapp/fluxer/blob/refactor/packages/config/src/schema/defs/integrations/photo_dna.json
         //vs. https://github.com/fluxerapp/fluxer/blob/refactor/packages/config/src/schema/defs/integrations/csam.json
+        //You may crash with this in your config.
         //So this snippet for now will not work, but may in the future.
         "csam" : {
             "enabled": true,
@@ -602,8 +603,7 @@
             }
         },
         //Meilisearch for search example
-        //Schema for some reason doesn't allow basic auth here, but does on Elasticsearch?
-        //Comments may be misleading.
+        //Schema for some reason doesn't allow basic auth here, but does on Elasticsearch.
         //https://github.com/fluxerapp/fluxer/blob/refactor/packages/config/src/schema/defs/integrations/search.json
         "search": {
             "engine": "meilisearch",
@@ -632,11 +632,11 @@
             "webhook_url": "https://lk.domain.tld/livekit/webhook",
             "url": "wss://lk.domain.tld",
             "default_region": {
-            "id": "default",
-            "name": "Default Region",
-            "emoji": "🌐",
-            "latitude": 0.0,
-            "longitude": 0.0
+                "id": "default",
+                "name": "Default Region",
+                "emoji": "🌐",
+                "latitude": 0.0,
+                "longitude": 0.0
             }
         },
         //LiveKit but with no region bootstrap.
