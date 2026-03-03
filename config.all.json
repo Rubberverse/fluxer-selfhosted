@@ -506,7 +506,6 @@
         "csam" : {
             "enabled": true,
             "provider": "arachnid_shield",
-            "photo_dna": {},
             "arachnid_shield": {
                 "endpoint": "https://shield.projectarachnid.com/v1/media",
                 "username": "your-username",
